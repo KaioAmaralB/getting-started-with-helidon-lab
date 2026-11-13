@@ -1,0 +1,16 @@
+Modo: ferramenta de imagens integrada (image_gen).
+
+Use case: compositing.
+Asset type: publication-ready evidence figure for a Brazilian Portuguese technical article.
+Edit targets: image 1 is the Java2 JMeter screenshot (8517 samples); image 2 is the Python JMeter screenshot (8257 samples); image 3 is the Go JMeter screenshot (8350 samples).
+Create ONE clean wide landscape figure with THREE equal horizontal swimlanes, stacked vertically, in this exact order: Java, Python, Go. White background, restrained professional editorial style, thin pale gray dividers, compact margins, no overall title, no decorative graphics.
+In each swimlane put a recognizable language logo and its name at the LEFT: Java's blue cup with red steam plus "Java"; Python's blue-and-yellow intertwined snake logo plus "Python"; Go's official cyan GO wordmark plus "Go". Keep the identification column compact, about 13% of width, and use equal visual weight for all three identities.
+At the RIGHT place a tightly cropped, full-width portion of the corresponding ORIGINAL screenshot containing ONLY the complete JMeter table header plus the TWO populated rows (sampler and TOTAL). Remove the app menus, left navigation, form fields, and all empty table space. Keep the dark screenshot background. Align all table columns identically between the three lanes.
+CRITICAL INVARIANTS: this is evidence, not a redesigned table. Preserve the original screenshot table text, numbers, decimal separators, percentage signs, grid and both populated rows. Do not edit data, do not omit any column, do not recreate or paraphrase any result. Use Java2, never Java1.
+Verification of exact table data (each sampler row and TOTAL row has the same numeric data):
+Java: 8517 | 4759 | 3058 | 10200 | 568.22 | 13.44% | 3.1/sec | 1.21 | 0.89 | 394.7.
+Python: 8257 | 4908 | 3090 | 120017 | 6973.86 | 4.13% | 3.1/sec | 1.23 | 0.85 | 411.5.
+Go: 8350 | 4860 | 2769 | 57066 | 2290.01 | 11.56% | 3.1/sec | 1.08 | 0.87 | 357.3.
+Retain original column headers in their original language, including Label, # Samples, Average, Min, Max, Std. Dev., Erro %, Throughput, Received KB..., Sent KB/sec, Avg. Bytes.
+Typography must remain sharply legible. Use the largest practical high-resolution output, preferably 3840 px wide or greater, with wide landscape proportions appropriate to the long tables and three compact stacked bands. Preserve all data; no perspective, no tilt, no rankings, no medals, no newly invented metrics, no extra notes.
+

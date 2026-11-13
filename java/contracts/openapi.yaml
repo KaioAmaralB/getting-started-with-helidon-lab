@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Trilha - contrato HTTP do laboratorio agentico
+  version: 1.0.0
+  description: |
+    Contrato comum para as futuras implementacoes Java, Python e Go.
+    Cada chamada e independente. O cliente envia o resumo anterior quando
+    deseja continuidade; nao ha memoria compartilhada entre usuarios.
+servers:
+  - url: http://localhost:8080
+paths:
+  /health:
+    get:
+      summary: Verificar se o processo HTTP esta ativo
+      responses:
+        '200':
+          description: Processo ativo; nao comprova disponibilidade do modelo OCI.
+  /api/v1/runtime:
+    get:
+      summary: Consultar informacoes do runtime e da thread HTTP
+      responses:
+        '200':
+          description: Diagnostico do runtime e modo do provedor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeInfo'
+  /api/v1/metrics:
+    get:
+      summary: Consultar contadores agregados do modelo desde o inicio do processo
+      description: |
+        Snapshot nao atomico entre campos. Para calcular deltas de um ensaio,
+        obtenha snapshots antes e depois com trafego parado.
+        requestedToolCalls conta solicitacoes do modelo, nao execucoes bem-sucedidas.
+        No replay, os campos de tokens representam unidades sinteticas.
+      responses:
+        '200':
+          description: Contadores agregados de todas as rotas e modelos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelMetrics'
+  /api/v1/direct:
+    post:
+      summary: Consultar o AI Service declarativo introdutorio de politica de troca
+      description: |
+        Usa AI Service, RAG e tool, sem workflow nem supervisor.
+        A resposta sempre contem summary vazio; esta rota nao atualiza
+        o resumo da conversa e forma um ensaio pedagogico separado.
+      operationId: direct
+      requestBody:
+        $ref: '#/components/requestBodies/Chat'
+      responses:
+        '200':
+          description: Resposta do AI Service com summary vazio.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ChatResponse'
+                  - type: object
+                    properties:
+                      summary:
+                        type: string
+                        enum: ['']
+        default:
+          description: Falha de validacao, protecao ou dependencia; registrar status HTTP.
+  /api/v1/workflow:
+    post:
+      summary: Classificar a solicitacao e executar um especialista e o resumo
+      operationId: workflow
+      requestBody:
+        $ref: '#/components/requestBodies/Chat'
+      responses:
+        '200':
+          $ref: '#/components/responses/Answer'
+        default:
+          description: Falha de validacao, protecao ou dependencia; registrar status HTTP.
+  /api/v1/supervisor:
+    post:
+      summary: Delegar a especialistas escolhidos pelo supervisor
+      description: Plano de chamadas variavel; medir separadamente do workflow fixo.
+      operationId: supervisor
+      requestBody:
+        $ref: '#/components/requestBodies/Chat'
+      responses:
+        '200':
+          $ref: '#/components/responses/Answer'
+        default:
+          description: Falha de validacao, protecao ou dependencia; registrar status HTTP.
+  /api/v1/mcp:
+    post:
+      summary: Responder com uma ferramenta exposta pelo servidor MCP
+      description: Inclui transporte MCP; medir separadamente das tools locais.
+      operationId: mcp
+      requestBody:
+        $ref: '#/components/requestBodies/Chat'
+      responses:
+        '200':
+          $ref: '#/components/responses/Answer'
+        default:
+          description: Falha de validacao, protecao ou dependencia; registrar status HTTP.
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          description: Pergunta do usuario; espacos isolados nao formam uma pergunta valida.
+          example: Qual o status do pedido TR-1001?
+        summary:
+          type: string
+          default: ''
+          maxLength: 1500
+          nullable: true
+          description: Resumo anterior devolvido pela API; vazio na primeira chamada.
+    RuntimeInfo:
+      type: object
+      required: [javaVersion, virtualThread, providerMode]
+      properties:
+        javaVersion:
+          type: string
+          description: Versao do JDK em execucao.
+        virtualThread:
+          type: boolean
+          description: Indica se esta requisicao HTTP executou em virtual thread.
+        providerMode:
+          type: string
+          enum: [local, remote]
+          description: local para URL base de provedor em loopback; remote nos demais casos.
+    ModelMetrics:
+      type: object
+      required:
+        - modelRequests
+        - modelResponses
+        - modelErrors
+        - inputTokens
+        - outputTokens
+        - responsesWithoutCompleteUsage
+        - requestedToolCalls
+      properties:
+        modelRequests:
+          type: integer
+          format: int64
+          minimum: 0
+        modelResponses:
+          type: integer
+          format: int64
+          minimum: 0
+        modelErrors:
+          type: integer
+          format: int64
+          minimum: 0
+        inputTokens:
+          type: integer
+          format: int64
+          minimum: 0
+        outputTokens:
+          type: integer
+          format: int64
+          minimum: 0
+        responsesWithoutCompleteUsage:
+          type: integer
+          format: int64
+          minimum: 0
+        requestedToolCalls:
+          type: integer
+          format: int64
+          minimum: 0
+    ChatResponse:
+      type: object
+      required: [answer, summary]
+      properties:
+        answer:
+          type: string
+          minLength: 1
+        summary:
+          type: string
+      example:
+        answer: O pedido TR-1001 esta em transito.
+        summary: Consulta ao pedido TR-1001.
+  requestBodies:
+    Chat:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChatRequest'
+  responses:
+    Answer:
+      description: Resposta de negocio e resumo para a proxima chamada.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChatResponse'

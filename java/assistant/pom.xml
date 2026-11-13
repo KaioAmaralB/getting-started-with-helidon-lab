@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <parent><groupId>lab.trilha</groupId><artifactId>trilha-lab</artifactId><version>1.0.0-SNAPSHOT</version><relativePath>../pom.xml</relativePath></parent>
+ <artifactId>assistant</artifactId>
+ <properties><mainClass>lab.trilha.Main</mainClass></properties>
+ <dependencies>
+  <dependency><groupId>lab.trilha</groupId><artifactId>domain</artifactId><version>${project.version}</version></dependency>
+  <dependency><groupId>io.helidon.integrations.langchain4j</groupId><artifactId>helidon-integrations-langchain4j</artifactId></dependency>
+  <dependency><groupId>io.helidon.integrations.langchain4j.providers</groupId><artifactId>helidon-integrations-langchain4j-providers-open-ai</artifactId></dependency>
+  <dependency><groupId>io.helidon.integrations.langchain4j.providers</groupId><artifactId>helidon-integrations-langchain4j-providers-lc4j-in-process</artifactId></dependency>
+  <dependency><groupId>dev.langchain4j</groupId><artifactId>langchain4j-embeddings-all-minilm-l6-v2-q</artifactId></dependency>
+  <dependency><groupId>dev.langchain4j</groupId><artifactId>langchain4j-agentic</artifactId></dependency>
+  <dependency><groupId>dev.langchain4j</groupId><artifactId>langchain4j-mcp</artifactId></dependency>
+  <dependency><groupId>io.helidon.webserver</groupId><artifactId>helidon-webserver</artifactId></dependency>
+  <dependency><groupId>io.helidon.http.media</groupId><artifactId>helidon-http-media-json-binding</artifactId></dependency>
+  <dependency><groupId>io.helidon.config</groupId><artifactId>helidon-config-yaml</artifactId></dependency>
+  <dependency><groupId>io.helidon.logging</groupId><artifactId>helidon-logging-jul</artifactId><scope>runtime</scope></dependency>
+  <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-jdk14</artifactId><scope>runtime</scope></dependency>
+  <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
+ </dependencies>
+ <build><finalName>assistant</finalName><plugins>
+  <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId><executions><execution><id>copy-libs</id></execution></executions></plugin>
+  <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><parameters>true</parameters><annotationProcessorPaths>
+   <path><groupId>io.helidon.integrations.langchain4j</groupId><artifactId>helidon-integrations-langchain4j-codegen</artifactId><version>${helidon.version}</version></path>
+   <path><groupId>io.helidon.bundles</groupId><artifactId>helidon-bundles-apt</artifactId><version>${helidon.version}</version></path>
+  </annotationProcessorPaths></configuration></plugin>
+  <plugin><groupId>io.helidon.service</groupId><artifactId>helidon-service-maven-plugin</artifactId><version>${helidon.version}</version><executions><execution><id>create-application</id><goals><goal>create-application</goal></goals></execution></executions></plugin>
+ </plugins></build>
+</project>

@@ -1,0 +1,32 @@
+{
+  "modelVersion": "all-minilm-l6-v2-q / LangChain4j1.18.1-beta28",
+  "onnxRuntimeVersion": "1.20.0",
+  "assets": [
+    {
+      "file": "model.onnx",
+      "sourceJar": "langchain4j-embeddings-all-minilm-l6-v2-q-1.18.1-beta28.jar",
+      "entry": "all-minilm-l6-v2-q.onnx",
+      "sha256": "afdb6f1a0e45b715d0bb9b11772f032c399babd23bfc31fed1c170afc848bdb1",
+      "bytes": 22972370
+    },
+    {
+      "file": "tokenizer.json",
+      "sourceJar": "langchain4j-embeddings-all-minilm-l6-v2-q-1.18.1-beta28.jar",
+      "entry": "all-minilm-l6-v2-q-tokenizer.json",
+      "sha256": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0",
+      "bytes": 711661
+    }
+  ],
+  "nativeRuntime": {
+    "sourceJar": "onnxruntime-1.20.0.jar",
+    "entry": "ai/onnxruntime/native/win-x64/onnxruntime.dll",
+    "sha256": "fc540584294ee523643b538de6a4573cda6f60a3f041f5e19c9a92ef1a21f856",
+    "bytes": 11567672
+  },
+  "effectiveTokenizer": {
+    "maxLength": 128,
+    "truncation": "LONGEST_FIRST",
+    "padding": false
+  },
+  "note": "Arquivos extraídos de dependências já existentes; nenhum arquivo Java é alterado."
+}

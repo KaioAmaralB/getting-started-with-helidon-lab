@@ -1,0 +1,60 @@
+# Local defaults. Environment variables with these names override them.
+OCI_API_KEY: <OCI_API_KEY_OCI_GENERATIVE_AI>
+OCI_BASE_URL: <URL_OCI_GENERATIVE_AI_INFERENCE>
+OCI_ROUTING_MODEL: <MODEL_NAME_ROUTING>
+OCI_EXPERT_MODEL: <MODEL_NAME_EXPERT>
+server:
+  host: "127.0.0.1"
+  port: 8080
+declarative:
+  ignore-incubating: true
+langchain4j:
+  providers:
+    open-ai:
+      api-key: "${OCI_API_KEY}"
+      base-url: "${OCI_BASE_URL}"
+      listeners.service-registry.named: model-metrics
+      temperature: 0.0
+      max-tokens: 512
+      max-retries: 0
+      timeout: PT60S
+      log-requests: false
+      log-responses: false
+    lc4j-in-process:
+      type: all_minilm_l6_v2_q
+    lc4j-content-retriever:
+      embedding-model: policy-embedding
+      max-results: 2
+      min-score: 0.0
+  models:
+    routing-model:
+      provider: open-ai
+      model-name: "${OCI_ROUTING_MODEL}"
+    expert-model:
+      provider: open-ai
+      model-name: "${OCI_EXPERT_MODEL}"
+    policy-embedding:
+      provider: lc4j-in-process
+  embedding-stores:
+    orders-store:
+      provider: lc4j-in-memory
+      from-file: knowledge/orders-embeddings.json
+    returns-store:
+      provider: lc4j-in-memory
+      from-file: knowledge/returns-embeddings.json
+  content-retrievers:
+    orders:
+      provider: lc4j-content-retriever
+      embedding-store: orders-store
+    returns:
+      provider: lc4j-content-retriever
+      embedding-store: returns-store
+  mcp-clients:
+    order-server:
+      uri: "http://127.0.0.1:8081/orders"
+      initialization-timeout: PT10S
+      tool-execution-timeout: PT10S
+      log-requests: false
+      log-responses: false
+
+
